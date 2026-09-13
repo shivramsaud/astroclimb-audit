@@ -1,0 +1,9 @@
+# EXP011 reproducibility config (documentation artifact; notebook is authoritative).
+experiment: EXP011
+prompt_file: experiments/prompts/EXP011_system.txt
+model: google/gemma-4-E4B-it BASE
+data: test.csv 10000
+method: zeroshot submission
+max_new_tokens: 32
+platform: Kaggle T4x2
+hf: ShivRamSaud/gemma4-e4b-BASE-submit/submission/submission.csv

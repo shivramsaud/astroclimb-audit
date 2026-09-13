@@ -1,0 +1,119 @@
+# Notebook rename provenance. Original Kaggle-download filenames were untrusted;
+# corrected filenames reflect executable implementation (model + method + stage).
+- experiment_id: EXP001
+  original_filename: e4b-mergged-and-eval (2).ipynb
+  corrected_filename: notebooks/valid/EXP001__gemma4_e4b__qlora_finetuned__eval.ipynb
+  reason: >
+    Original filename is a typo'd pipeline label ("mergged"). Executable code evaluates
+    google/gemma-4-E4B-it + ShivRamSaud/gemma4-e4b-qlora-astroclimb/adapter_best on the
+    NEW 23-col sampled dataset (1800 balanced), then merges to merged_best.
+- experiment_id: EXP002
+  original_filename: loading-encoded-astroclimb-images (4).ipynb
+  corrected_filename: notebooks/valid/EXP002__gemma4_e4b__image_caption__zeroshot_baseline.ipynb
+  reason: >
+    Generic downloader filename hides content. Code runs google/gemma-4-E4B-it (bf16
+    sharded fallback after 4-bit offload failure) zero-shot on OLD train.csv, 1800 balanced.
+- experiment_id: EXP003
+  original_filename: baseline-qwen (1).ipynb
+  corrected_filename: notebooks/valid/EXP003__gemma4_e4b__image_caption__fewshot_thinking.ipynb
+  reason: >
+    Filename claims Qwen baseline but executable MODEL_ID is google/gemma-4-E4B-it with
+    few-shot (1/class, 4 total) thinking eval. Filename was actively misleading.
+- experiment_id: EXP004
+  original_filename: baseline-qwen.ipynb
+  corrected_filename: notebooks/valid/EXP004__qwen3_vl_8b_thinking__image_caption__zeroshot.ipynb
+  reason: >
+    Filename is accurate for once (Qwen3-VL-8B-Thinking zero-shot, OLD train.csv).
+    Kept as primary; baseline-qwen (2).ipynb is the same experiment version (superseded).
+- experiment_id: EXP005
+  original_filename: loading-encoded-astroclimb-images (1).ipynb
+  corrected_filename: notebooks/valid/EXP005__qwen3_vl_4b_thinking__image_caption__fewshot_truncated.ipynb
+  reason: >
+    Generic filename hid Qwen/Qwen3-VL-4B-Thinking few-shot thinking eval on NEW sampled
+    data, truncated at 397/1800 by the 6.5h guard.
+- experiment_id: EXP006
+  original_filename: loading-encoded-astroclimb-images (3).ipynb
+  corrected_filename: notebooks/valid/EXP006__kimi_vl_a3b_thinking__image_caption__fewshot_oom.ipynb
+  reason: >
+    Generic filename hid moonshotai/Kimi-VL-A3B-Thinking few-shot eval on NEW sampled data.
+    Every sample OOM-fell back to unrelated_papers (degenerate macro-F1 0.10).
+- experiment_id: EXP007
+  original_filename: loading-encoded-astroclimb-images (5).ipynb
+  corrected_filename: notebooks/valid/EXP007__smolvlm_500m__image_caption__zeroshot_fallback.ipynb
+  reason: >
+    Generic filename hid the gated-gemma fallback story: code tries google/gemma-3-4b-it,
+    catches 401, and actually evaluates HuggingFaceTB/SmolVLM-500M-Instruct zero-shot on OLD data.
+- experiment_id: EXP008
+  original_filename: loading-encoded-astroclimb-images (7).ipynb
+  corrected_filename: notebooks/valid/EXP008__glm41v_9b_thinking__image_caption__fewshot_truncated.ipynb
+  reason: >
+    Generic filename hid Rainnighttram/GLM-4.1V-9B-Thinking-bnb-4bit few-shot eval on NEW
+    sampled data, truncated at 445/1800 by the 6.5h guard.
+- experiment_id: EXP009
+  original_filename: loading-encoded-astroclimb-images (8).ipynb
+  corrected_filename: notebooks/valid/EXP009__glm46v_flash__image_caption__zeroshot_truncated.ipynb
+  reason: >
+    Generic filename hid zai-org/GLM-4.6V-Flash zero-shot (bf16 fallback) eval on OLD data,
+    truncated at 610/1800, degenerate toward unrelated_papers.
+- experiment_id: EXP010
+  original_filename: 3-5gemmae4bsubmission (1).ipynb
+  corrected_filename: notebooks/valid/EXP010__gemma4_e4b_v2fresh_adapter__test__submission.ipynb
+  reason: >
+    Cryptic filename. Code runs the v2-fresh adapter_best (3.1ep finetune) + base over
+    test.csv 10k and completed submission.csv (10000/10000) to HF v2-fresh repo.
+- experiment_id: EXP011
+  original_filename: baselineastroclimb-submission (1).ipynb
+  corrected_filename: notebooks/valid/EXP011__gemma4_e4b_base__test__submission.ipynb
+  reason: >
+    Code runs the BASE google/gemma-4-E4B-it zero-shot over test.csv 10k and completed
+    submission.csv (10000/10000) to HF BASE-submit repo.
+- experiment_id: EXP012
+  original_filename: smolsubmissiontest (1).ipynb
+  corrected_filename: notebooks/valid/EXP012__smolvlm_500m_lora__test__submission.ipynb
+  reason: >
+    Code runs HuggingFaceTB/SmolVLM-500M-Instruct + adapter_best over test.csv 10k and
+    completed submission.csv (10000/10000). Prediction distribution has zero unrelated_papers.
+- experiment_id: null
+  original_filename: 3-5gemmae4bsubmission (2).ipynb
+  corrected_filename: notebooks/excluded/EXCLUDED__v2fresh_adapter_submit__failed_4021_unscored.ipynb
+  reason: Same v2-fresh submission experiment as EXP010 but failed (AssertionError, 4021 unscored).
+- experiment_id: null
+  original_filename: astroclimb-submission (1).ipynb
+  corrected_filename: notebooks/excluded/EXCLUDED__merged_best_submit__failed_3136_unscored_a.ipynb
+  reason: Merged_best submission attempt over test.csv; failed with 3136 unscored (HF 503 during push).
+- experiment_id: null
+  original_filename: astroclimb-submission (2).ipynb
+  corrected_filename: notebooks/excluded/EXCLUDED__merged_best_submit__failed_3136_unscored_b.ipynb
+  reason: Byte-exact duplicate (sha ffbaf46b19cc7eaa) of the failed merged_best submission above.
+- experiment_id: null
+  original_filename: loading-encoded-astroclimb-images (2).ipynb
+  corrected_filename: notebooks/excluded/EXCLUDED__internvl3_5_8b__failed_oom_nometric.ipynb
+  reason: OpenGVLab/InternVL3_5-8B-HF eval drowned in CUDA OOMs; final cell ValueError [1800,1301]; no trustworthy metric.
+- experiment_id: null
+  original_filename: gemmae4b-smoke-test.ipynb
+  corrected_filename: notebooks/excluded/EXCLUDED__gemmae4b_smoke_10samples__no_metric.ipynb
+  reason: 10-sample smoke test of the Gemma QLoRA pipeline; generate OK but no evaluation metric.
+- experiment_id: null
+  original_filename: notebook5061bf6572.ipynb
+  corrected_filename: notebooks/excluded/EXCLUDED__glm41v_9b_qlora_ddp__train_only.ipynb
+  reason: GLM-4.1V-9B-Thinking QLoRA DDP finetune setup only; no evaluation ever ran in-notebook.
+- experiment_id: null
+  original_filename: notebookb3b58ceefd.ipynb
+  corrected_filename: notebooks/excluded/EXCLUDED__glm41v_9b_qlora_ddp__train_only_duplicate.ipynb
+  reason: Near-duplicate of the GLM train-only notebook above; same exclusion reason.
+- experiment_id: null
+  original_filename: smolvlmfinetune (2).ipynb
+  corrected_filename: notebooks/excluded/EXCLUDED__smolvlm_500m_lora__train_only_eval_syntax_error.ipynb
+  reason: SmolVLM-500M LoRA training succeeded (ckpt 400/800, best loss 0.3029, adapter_best pushed) but the in-notebook eval cell has SyntaxError unmatched ')'; no metric.
+- experiment_id: null
+  original_filename: smolvlmfinetune (3).ipynb
+  corrected_filename: notebooks/excluded/EXCLUDED__smolvlm_500m_lora__train_only_duplicate.ipynb
+  reason: Byte-exact duplicate (sha 95fe85b95e191519) of the SmolVLM train-only notebook above.
+- experiment_id: EXP004
+  original_filename: baseline-qwen (2).ipynb
+  corrected_filename: notebooks/excluded/SUPERSEDED__qwen3_vl_8b_thinking__same_as_EXP004.ipynb
+  reason: Same Qwen3-VL-8B-Thinking zero-shot experiment as EXP004 (macro-F1 0.1060 vs 0.1068); EXP004 kept as primary.
+- experiment_id: EXP007
+  original_filename: loading-encoded-astroclimb-images (6).ipynb
+  corrected_filename: notebooks/excluded/DUPLICATE__smolvlm_500m_fallback__exact_dup_of_EXP007.ipynb
+  reason: Byte-exact duplicate (sha 21db1f7bd29d219b) of EXP007.

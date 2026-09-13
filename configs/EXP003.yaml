@@ -1,0 +1,11 @@
+# EXP003 reproducibility config (documentation artifact; notebook is authoritative).
+experiment: EXP003
+prompt_file: experiments/prompts/EXP003_system.txt
+model: google/gemma-4-E4B-it thinking
+data: NEW sampled 1800 (OLD-style grouping; see report)
+method: fewshot-4 thinking
+max_new_tokens: unknown
+do_sample: False
+batch: 1
+platform: Kaggle T4x2
+elapsed_h: 6.26

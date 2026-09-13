@@ -1,0 +1,10 @@
+# EXP007 reproducibility config (documentation artifact; notebook is authoritative).
+experiment: EXP007
+prompt_file: experiments/prompts/EXP007_system.txt
+model: HuggingFaceTB/SmolVLM-500M-Instruct (fallback from gemma-3-4b-it 401)
+data: OLD train.csv 1800 balanced
+method: zeroshot
+max_new_tokens: 32
+batch: 1
+platform: Kaggle T4x2
+elapsed_h: 1.52

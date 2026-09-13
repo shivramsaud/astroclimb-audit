@@ -1,0 +1,10 @@
+# EXP008 reproducibility config (documentation artifact; notebook is authoritative).
+experiment: EXP008
+prompt_file: experiments/prompts/EXP008_system.txt
+model: Rainnighttram/GLM-4.1V-9B-Thinking-bnb-4bit
+data: NEW sampled truncated 445/1800
+method: fewshot-4 thinking
+batch: 1
+quant: pre-quantized bnb-4bit
+platform: Kaggle T4x2
+elapsed_h: 6.52

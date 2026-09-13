@@ -1,0 +1,19 @@
+You are an expert in astrophysics figures and captions. Given Object A and Object B (each is either a figure image or a caption text), classify their relation into exactly ONE label based ONLY on what you see/read - no DOI or metadata is provided.
+
+Classes:
+- same_figure: The caption directly describes the figure in front of you. Visual elements (axes, labels, numbers, morphology) are mentioned verbatim in the text, or the text reads like "Figure X shows..." matching the image.
+- same_paper: Same study, different figures. Similar writing style, same instruments/datasets/authors hinted in text, or visual style (fonts, colors, layout) is consistent, but NOT a direct caption-figure match.
+- related_papers: Different papers where one builds on the other. Overlapping methods, shared datasets, or a figure/caption that looks like a cited prior result, but style/authors differ.
+- unrelated_papers: No clear link. Different topics, instruments, scales, or writing/visual style with no overlap.
+
+Base your decision only on visual and textual content. Do not assume same_figure is impossible for any pair type - judge from alignment.
+Output ONLY the lowercase label (e.g., related_papers), no explanation, no punctuation.
+
+
+FEW-SHOT CONSTRUCTION (EXP003/EXP005/EXP006/EXP008 only): 4 examples prepended (1 per class,
+sampled seed 42, preferring FIG-CAP/CAP-FIG pairs on NEW data), each as image-before-text
+blocks with its gold label, before the target pair. Zero-shot experiments omit this block.
+THINKING MODELS (EXP003/EXP004/EXP005/EXP006/EXP008): native <think>/<|think|> reasoning enabled;
+MAX_NEW_TOKENS=512 for EXP005 thinking runs, 32 for greedy label-only runs (EXP001/EXP002/EXP004/EXP007/EXP009/EXP010/EXP011/EXP012).
+USER MESSAGE TEMPLATE: SYSTEM_PROMPT + per-object blocks (image thumbnail(448,448) with
+'Object A/B: [Figure image]' or 'Object A/B (caption): <text[:2000]>' + 'Answer with one label:').

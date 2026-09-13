@@ -1,0 +1,13 @@
+# EXP001 reproducibility config (documentation artifact; notebook is authoritative).
+experiment: EXP001
+prompt_file: experiments/prompts/EXP001_system.txt
+model: google/gemma-4-E4B-it + ShivRamSaud/gemma4-e4b-qlora-astroclimb/adapter_best
+data: NEW-23col 1800 balanced
+method: qlora_adapter_eval greedy
+max_new_tokens: 32
+do_sample: False
+image: thumbnail(448,448)
+caption_chars: 2000
+quant: 4-bit NF4 bf16-compute
+device: auto {0:14GB,1:14GB}
+platform: Kaggle T4x2

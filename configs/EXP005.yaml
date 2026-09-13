@@ -1,0 +1,11 @@
+# EXP005 reproducibility config (documentation artifact; notebook is authoritative).
+experiment: EXP005
+prompt_file: experiments/prompts/EXP005_system.txt
+model: Qwen/Qwen3-VL-4B-Thinking
+data: NEW sampled truncated 397/1800
+method: fewshot-4 thinking
+max_new_tokens: 512
+batch: 1
+dtype: bfloat16
+platform: Kaggle T4x2
+elapsed_h: 6.51

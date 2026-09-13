@@ -1,0 +1,312 @@
+# Machine-readable experiment registry. Source of truth = executed code + outputs.
+# Local metrics are notebook-computed; official (Kaggle/shared-task) metrics are
+# pending_user_confirmation unless the user confirms them (see official_confirmation).
+# unknown = not established from evidence; never guessed.
+experiments:
+  EXP001:
+    name: Gemma4-E4B QLoRA finetuned adapter evaluation (NEW 23-col, merged to merged_best)
+    status: VALID
+    source_notebooks:
+      - notebooks/valid/EXP001__gemma4_e4b__qlora_finetuned__eval.ipynb
+    original_filenames:
+      - e4b-mergged-and-eval (2).ipynb
+    model:
+      family: Gemma4
+      name: google/gemma-4-E4B-it
+      version: unknown
+      provider: Google
+      checkpoint: google/gemma-4-E4B-it + ShivRamSaud/gemma4-e4b-qlora-astroclimb/adapter_best
+      architecture: Gemma4ForConditionalGeneration (AutoModelForMultimodalLM)
+    task:
+      name: AstroCLIMB 4-class pair relation classification
+      formulation: multiclass single-label
+      num_classes: 4
+      labels: [same_figure, same_paper, related_papers, unrelated_papers]
+      label_mapping: NEW data label int 0=same_paper, 1=related_papers, 2=same_figure, 3=unrelated_papers; submission order [same_figure, same_paper, related_papers, unrelated_papers]
+    dataset:
+      name: jcxiv42/astroclimb sampled (NEW 23-col)
+      url: https://huggingface.co/datasets/adsabs/AstroCLIMB
+      source: /kaggle/input/datasets/jcxiv42/astroclimb/astroclimb_4class(sampled).csv + object_images_sampled/{uuid}.png
+      version: unknown
+      configuration: 1800 balanced (450/label; pair types FIG-CAP/CAP-FIG/FIG-FIG/CAP-CAP 450 each)
+      split: validation-style generation eval on all 1800 (no train/test split in-notebook; adapter trained externally)
+      train_size: 0
+      validation_size: 1800
+      test_size: 0
+    modality: {image: true, caption: true, text: true, other: none}
+    method: {type: qlora_finetuned_generation_eval, trained: true, fine_tuned: true, peft: true, lora: true, qlora: true}
+    prompting:
+      strategy: zero-shot
+      system_prompt_file: experiments/prompts/EXP001_system.txt
+      user_prompt: object-driven; image BEFORE text (finetune contract); captions truncated [:2000]; missing figure -> skip row
+      template: SYSTEM_PROMPT + per-object blocks + 'Answer with one label'
+      few_shot: false
+      num_examples: 0
+      reasoning: none (direct label; greedy)
+      output_format: lowercase label only
+      parsing: normalize raw, map to 4 labels; OOM rows fall back to unrelated_papers (0 such rows here)
+    preprocessing: {image: thumbnail(448,448), caption: truncate 2000 chars, text: same, labels: map to submission order}
+    training:
+      note: adapter trained OUTSIDE this notebook (Lightning/HF run); this notebook evaluates it. Finetune-train best val_loss 0.3489 at 900 steps per notebook output.
+      epochs: unknown
+      steps: 900
+      batch_size: unknown
+      effective_batch_size: unknown
+      learning_rate: unknown
+      optimizer: unknown
+      precision: bfloat16
+      quantization: 4-bit NF4 (bnb_4bit_compute_dtype=bfloat16, double_quant True)
+      seed: unknown
+    inference: {temperature: 0, top_p: unknown, top_k: unknown, max_new_tokens: 32, do_sample: false, seed: unknown, device_map: auto max_memory {0: 14GB, 1: 14GB}, platform: Kaggle GPU T4 x2}
+    evaluation:
+      split: NEW 23-col balanced 1800 (full)
+      metric: macro-F1 (sklearn classification_report, labels=label_cols)
+      macro_f1: 0.6170137014077717
+      accuracy: 0.6238888888888889
+      per_class_f1: {same_figure: 0.8169014084507042, same_paper: 0.5925925925925926, related_papers: 0.3714670255720054, unrelated_papers: 0.6870937790157846}
+      per_pair_f1: {FIG-CAP: 0.5862399204114663, CAP-FIG: 0.5727878478567083, FIG-FIG: 0.5805230228574368, CAP-CAP: 0.5883200052502565}
+      n_scored: 1800
+      n_total: 1800
+      n_skipped: 0
+    results:
+      local: {macro_f1: 0.6170137014077717, accuracy: 0.6238888888888889}
+      kaggle: pending_user_confirmation
+      shared_task: pending_user_confirmation
+      official_status: pending_user_confirmation
+    artifacts: {checkpoint: ShivRamSaud/gemma4-e4b-qlora-astroclimb/merged_best (merged in-notebook), predictions: preds_val_final.npy, metrics: metrics.json, confusion: confusion.png, raw: raw_outputs.jsonl + raw_outputs_final.jsonl}
+    provenance: {train_notebook: external (adapter_best from HF), evaluation_notebook: EXP001 notebook, versions_merged: none, reconstruction_notes: none - single notebook completed end to end}
+    official_confirmation: {required: true, confirmed: false, confirmation_source: none, confirmation_notes: was this adapter/eval tied to an official submission? Awaiting user.}
+    confidence: high
+    notes: Best local metric in the directory. Old-format baseline 0.4408 is different rows, not comparable (notebook says so explicitly).
+    limitations: Adapter training hyperparameters not recorded in this notebook; test-set generalization unknown.
+
+  EXP002:
+    name: Gemma4-E4B zero-shot baseline (OLD 7-col, bf16)
+    status: VALID
+    source_notebooks:
+      - notebooks/valid/EXP002__gemma4_e4b__image_caption__zeroshot_baseline.ipynb
+    original_filenames:
+      - loading-encoded-astroclimb-images (4).ipynb
+    model: {family: Gemma4, name: google/gemma-4-E4B-it, version: unknown, provider: Google, checkpoint: google/gemma-4-E4B-it, architecture: Gemma4ForConditionalGeneration}
+    task: {name: AstroCLIMB 4-class pair relation classification, formulation: multiclass single-label, num_classes: 4, labels: [same_figure, same_paper, related_papers, unrelated_papers]}
+    dataset:
+      name: competitions/astroclimb train.csv (OLD 7-col, base64 obj_1/obj_2)
+      url: https://huggingface.co/datasets/adsabs/AstroCLIMB
+      source: /kaggle/input/competitions/astroclimb/train.csv
+      configuration: 1800 balanced (450/label)
+      split: balanced subset eval (train-only mode; test prediction skipped)
+    modality: {image: true, caption: true, text: true, other: none}
+    method: {type: zeroshot_generation_eval, trained: false, fine_tuned: false}
+    prompting: {strategy: zero-shot, system_prompt_file: experiments/prompts/EXP002_system.txt, few_shot: false, num_examples: 0, reasoning: none, output_format: lowercase label only, parsing: normalize + map; OOM fallback unrelated_papers}
+    preprocessing: {image: base64 decode + thumbnail, caption: truncate 2000 chars}
+    training: none (zero-shot)
+    inference: {temperature: 0, max_new_tokens: 32, do_sample: false, batch_size: 1, precision: bf16 sharded (4-bit attempt failed with CPU/disk offload error), device_map: auto max_memory {0: 10GB, 1: 10GB}, platform: Kaggle GPU T4 x2, elapsed_h: 5.9}
+    evaluation: {split: OLD balanced 1800, metric: macro-F1, macro_f1: 0.4408301779454079, accuracy: 0.5205555555555555, per_class_f1: {same_figure: 0.776, same_paper: 0.4108, related_papers: 0.0172, unrelated_papers: 0.5593}, n_scored: 1800}
+    results: {local: {macro_f1: 0.4408301779454079, accuracy: 0.5205555555555555}, kaggle: pending_user_confirmation, shared_task: pending_user_confirmation, official_status: pending_user_confirmation}
+    artifacts: {predictions: preds_train_bal_final.npy, metrics: metrics.json, confusion: confusion.png}
+    official_confirmation: {required: true, confirmed: false, confirmation_source: none, confirmation_notes: none}
+    confidence: high
+
+  EXP003:
+    name: Gemma4-E4B few-shot thinking eval (mislabeled filename baseline-qwen)
+    status: VALID
+    source_notebooks:
+      - notebooks/valid/EXP003__gemma4_e4b__image_caption__fewshot_thinking.ipynb
+    original_filenames:
+      - baseline-qwen (1).ipynb
+    model: {family: Gemma4, name: google/gemma-4-E4B-it, version: unknown, provider: Google, checkpoint: google/gemma-4-E4B-it, architecture: Gemma4ForConditionalGeneration}
+    task: {name: AstroCLIMB 4-class pair relation classification, formulation: multiclass single-label, num_classes: 4, labels: [same_figure, same_paper, related_papers, unrelated_papers]}
+    dataset:
+      name: jcxiv42 sampled per code path (NEW 23-col) with OLD-style 3-type eval grouping
+      source: /kaggle/input/datasets/jcxiv42/astroclimb/astroclimb_4class(sampled).csv (cell3; markdown claims OLD train.csv - conflict documented)
+      configuration: 1800 balanced
+      split: full 1800 eval
+      ambiguity: markdown header claims OLD 7-col base64, but code loads NEW sampled path; eval grouping uses TXT-IMG/IMG-IMG/TXT-TXT (OLD terminology). Treated as NEW-data few-shot run with OLD-style grouping; confidence medium on dataset identity.
+    modality: {image: true, caption: true, text: true, other: none}
+    method: {type: fewshot_thinking_generation_eval, trained: false, fine_tuned: false}
+    prompting: {strategy: few-shot, system_prompt_file: experiments/prompts/EXP003_system.txt, few_shot: true, num_examples: 4, examples: 1 per class sampled seed 42 preferring FIG-CAP/CAP-FIG, reasoning: native thinking token, output_format: lowercase label only}
+    preprocessing: {image: load from uuid + thumbnail(448,448), caption: truncate}
+    training: none
+    inference: {temperature: 0, max_new_tokens: unknown, do_sample: false, batch_size: 1, platform: Kaggle GPU T4 x2, elapsed_h: 6.26}
+    evaluation: {split: 1800 full, metric: macro-F1, macro_f1: 0.3924571240504341, accuracy: 0.505, per_class_f1: {same_figure: 0.7228127555192151, same_paper: 0.20466786355475763, related_papers: 0.05052631578947368, unrelated_papers: 0.59182156133829}, per_pair_f1: {TXT-IMG: 0.3363, IMG-IMG: 0.214, TXT-TXT: 0.2757}}
+    results: {local: {macro_f1: 0.3924571240504341, accuracy: 0.505}, kaggle: pending_user_confirmation, shared_task: pending_user_confirmation, official_status: pending_user_confirmation}
+    artifacts: {predictions: preds_train_bal_final.npy, metrics: metrics.json, raw: raw_outputs.jsonl}
+    official_confirmation: {required: true, confirmed: false, confirmation_source: none, confirmation_notes: none}
+    confidence: medium
+
+  EXP004:
+    name: Qwen3-VL-8B-Thinking zero-shot (OLD 7-col)
+    status: VALID
+    source_notebooks:
+      - notebooks/valid/EXP004__qwen3_vl_8b_thinking__image_caption__zeroshot.ipynb
+    original_filenames:
+      - baseline-qwen.ipynb
+      - baseline-qwen (2).ipynb (superseded same-experiment version in notebooks/excluded/)
+    model: {family: Qwen3-VL, name: Qwen/Qwen3-VL-8B-Thinking, version: unknown, provider: Qwen, checkpoint: Qwen/Qwen3-VL-8B-Thinking, architecture: Qwen3VLForConditionalGeneration}
+    task: {name: AstroCLIMB 4-class pair relation classification, formulation: multiclass single-label, num_classes: 4, labels: [same_figure, same_paper, related_papers, unrelated_papers]}
+    dataset: {name: competitions/astroclimb train.csv (OLD 7-col), source: /kaggle/input/competitions/astroclimb/train.csv, configuration: 1800 balanced (450/label), split: balanced subset eval}
+    modality: {image: true, caption: true, text: true, other: none}
+    method: {type: zeroshot_thinking_generation_eval, trained: false, fine_tuned: false}
+    prompting: {strategy: zero-shot, system_prompt_file: experiments/prompts/EXP004_system.txt, few_shot: false, reasoning: native <think>, output_format: lowercase label only}
+    preprocessing: {image: base64 decode + thumbnail, caption: truncate 2000}
+    training: none
+    inference: {temperature: 0, max_new_tokens: 32, do_sample: false, batch_size: 1, device_map: auto max_memory {0: 13GB, 1: 13GB}, quantization: 4-bit NF4, platform: Kaggle GPU T4 x2}
+    evaluation: {split: OLD balanced 1800, metric: macro-F1, macro_f1: 0.1068, accuracy: 0.2461, per_class_f1: {same_figure: 0.0322, same_paper: 0.0, related_papers: 0.0, unrelated_papers: 0.3949}, note: metric cells succeeded; trailing visualization cell failed with IndexError (1800 vs 10000 boolean index) - metric unaffected}
+    results: {local: {macro_f1: 0.1068, accuracy: 0.2461}, kaggle: pending_user_confirmation, shared_task: pending_user_confirmation, official_status: pending_user_confirmation}
+    artifacts: {predictions: preds npy, metrics: metrics.json}
+    official_confirmation: {required: true, confirmed: false, confirmation_source: none, confirmation_notes: none}
+    confidence: high
+    notes: Superseded twin baseline-qwen (2).ipynb scored macro-F1 0.1060 on the same setup; EXP004 primary kept.
+
+  EXP005:
+    name: Qwen3-VL-4B-Thinking few-shot (NEW, truncated 397/1800)
+    status: VALID
+    source_notebooks:
+      - notebooks/valid/EXP005__qwen3_vl_4b_thinking__image_caption__fewshot_truncated.ipynb
+    original_filenames:
+      - loading-encoded-astroclimb-images (1).ipynb
+    model: {family: Qwen3-VL, name: Qwen/Qwen3-VL-4B-Thinking, version: unknown, provider: Qwen, checkpoint: Qwen/Qwen3-VL-4B-Thinking, architecture: Qwen3VLForConditionalGeneration}
+    dataset: {name: jcxiv42 sampled (NEW 23-col), source: /kaggle/input/datasets/jcxiv42/astroclimb/astroclimb_4class(sampled).csv, configuration: 1800 balanced target, split: truncated eval 397/1800 (6.51h guard hit)}
+    modality: {image: true, caption: true, text: true, other: none}
+    method: {type: fewshot_thinking_generation_eval_truncated, trained: false, fine_tuned: false}
+    prompting: {strategy: few-shot, system_prompt_file: experiments/prompts/EXP005_system.txt, few_shot: true, num_examples: 4, reasoning: native <think>, output_format: lowercase label only}
+    preprocessing: {image: uuid load + thumbnail(448,448), caption: truncate}
+    training: none
+    inference: {temperature: unknown, max_new_tokens: 512, do_sample: false, batch_size: 1, precision: bfloat16, platform: Kaggle GPU T4 x2, elapsed_h: 6.51}
+    evaluation: {split: truncated 397/1800 (class supports 99/104/93/101), metric: macro-F1, macro_f1: 0.249694308102988, accuracy: 0.32997481108312343, warning: preds 397 != true 1800 - metric covers scored subset only, not comparable to full-1800 runs}
+    results: {local: {macro_f1: 0.249694308102988, accuracy: 0.32997481108312343, n_scored: 397}, kaggle: pending_user_confirmation, shared_task: pending_user_confirmation, official_status: pending_user_confirmation}
+    official_confirmation: {required: true, confirmed: false, confirmation_source: none, confirmation_notes: none}
+    confidence: medium
+
+  EXP006:
+    name: Kimi-VL-A3B-Thinking few-shot (NEW, all-OOM degenerate)
+    status: VALID
+    source_notebooks:
+      - notebooks/valid/EXP006__kimi_vl_a3b_thinking__image_caption__fewshot_oom.ipynb
+    original_filenames:
+      - loading-encoded-astroclimb-images (3).ipynb
+    model: {family: Kimi-VL, name: moonshotai/Kimi-VL-A3B-Thinking, version: unknown, provider: Moonshot, checkpoint: moonshotai/Kimi-VL-A3B-Thinking, architecture: KimiVLForConditionalGeneration (patched modeling_kimi_vl.py)}
+    dataset: {name: jcxiv42 sampled (NEW 23-col), source: /kaggle/input/datasets/jcxiv42/astroclimb/astroclimb_4class(sampled).csv, configuration: 1800 balanced, split: full 1800 eval}
+    modality: {image: true, caption: true, text: true, other: none}
+    method: {type: fewshot_thinking_generation_eval_oom_degenerate, trained: false, fine_tuned: false}
+    prompting: {strategy: few-shot, few_shot: true, num_examples: 4, reasoning: native <think>, output_format: lowercase label only}
+    preprocessing: {image: uuid load + thumbnail, caption: truncate}
+    training: none
+    inference: {max_new_tokens: unknown, platform: Kaggle GPU T4 x2, elapsed_h: 4.2, note: OOM on effectively every sample; fallback prediction unrelated_papers}
+    evaluation: {split: 1800 full, metric: macro-F1, macro_f1: 0.1, accuracy: 0.25, per_class_f1: {same_figure: 0.0, same_paper: 0.0, related_papers: 0.0, unrelated_papers: 0.4}, note: degenerate - model predicted only unrelated_papers due to OOM fallback; metric is an accurate record of the failure, not of model quality}
+    results: {local: {macro_f1: 0.1, accuracy: 0.25}, kaggle: pending_user_confirmation, shared_task: pending_user_confirmation, official_status: pending_user_confirmation}
+    official_confirmation: {required: true, confirmed: false, confirmation_source: none, confirmation_notes: none}
+    confidence: medium
+
+  EXP007:
+    name: SmolVLM-500M-Instruct zero-shot fallback (OLD 7-col)
+    status: VALID
+    source_notebooks:
+      - notebooks/valid/EXP007__smolvlm_500m__image_caption__zeroshot_fallback.ipynb
+    original_filenames:
+      - loading-encoded-astroclimb-images (5).ipynb
+      - loading-encoded-astroclimb-images (6).ipynb (byte-exact duplicate in notebooks/excluded/)
+    model: {family: SmolVLM, name: HuggingFaceTB/SmolVLM-500M-Instruct, version: unknown, provider: HuggingFaceTB, checkpoint: HuggingFaceTB/SmolVLM-500M-Instruct, architecture: Idefics3ForConditionalGeneration}
+    task: {name: AstroCLIMB 4-class pair relation classification, formulation: multiclass single-label, num_classes: 4, labels: [same_figure, same_paper, related_papers, unrelated_papers]}
+    dataset: {name: competitions/astroclimb train.csv (OLD 7-col), source: /kaggle/input/competitions/astroclimb/train.csv, configuration: 1800 balanced, split: balanced subset eval}
+    method: {type: zeroshot_generation_eval_fallback, trained: false, fine_tuned: false, note: code first tries google/gemma-3-4b-it (MODEL_ID.strip guard) then falls back to SmolVLM on 401; executed model is SmolVLM}
+    prompting: {strategy: zero-shot, system_prompt_file: experiments/prompts/EXP007_system.txt, few_shot: false, output_format: lowercase label only}
+    preprocessing: {image: base64 decode, caption: truncate}
+    training: none
+    inference: {temperature: 0, max_new_tokens: 32, do_sample: false, batch_size: 1, platform: Kaggle GPU T4 x2, elapsed_h: 1.52}
+    evaluation: {split: OLD balanced 1800, metric: macro-F1, macro_f1: 0.17226003566795145, accuracy: 0.2511111111111111, per_class_f1: {same_figure: 0.0128, same_paper: 0.0088, related_papers: 0.3333, unrelated_papers: 0.3341}}
+    results: {local: {macro_f1: 0.17226003566795145, accuracy: 0.2511111111111111}, kaggle: pending_user_confirmation, shared_task: pending_user_confirmation, official_status: pending_user_confirmation}
+    official_confirmation: {required: true, confirmed: false, confirmation_source: none, confirmation_notes: none}
+    confidence: high
+
+  EXP008:
+    name: GLM-4.1V-9B-Thinking few-shot (NEW, truncated 445/1800)
+    status: VALID
+    source_notebooks:
+      - notebooks/valid/EXP008__glm41v_9b_thinking__image_caption__fewshot_truncated.ipynb
+    original_filenames:
+      - loading-encoded-astroclimb-images (7).ipynb
+    model: {family: GLM, name: Rainnighttram/GLM-4.1V-9B-Thinking-bnb-4bit, version: unknown, provider: Rainnighttram, checkpoint: Rainnighttram/GLM-4.1V-9B-Thinking-bnb-4bit, architecture: GLM4.1V thinking (9B pre-quantized 4-bit)}
+    dataset: {name: jcxiv42 sampled (NEW 23-col), source: /kaggle/input/datasets/jcxiv42/astroclimb/astroclimb_4class(sampled).csv, configuration: 1800 balanced target, split: truncated eval 445/1800 (6.52h guard hit)}
+    modality: {image: true, caption: true, text: true, other: none}
+    method: {type: fewshot_thinking_generation_eval_truncated, trained: false, fine_tuned: false}
+    prompting: {strategy: few-shot, few_shot: true, num_examples: 4, reasoning: native <think>, output_format: lowercase label only}
+    training: none
+    inference: {max_new_tokens: unknown, do_sample: false, batch_size: 1, quantization: pre-quantized bnb-4bit, platform: Kaggle GPU T4 x2, elapsed_h: 6.52}
+    evaluation: {split: truncated 445/1800 (supports 111/115/107/112), metric: macro-F1, macro_f1: 0.41999843415627125, accuracy: 0.5235955056179775, per_class_f1: {same_figure: 0.8653061224489796, same_paper: 0.2571428571428571, related_papers: 0.0, unrelated_papers: 0.5575447570332481}, warning: subset-only metric, not comparable to full runs}
+    results: {local: {macro_f1: 0.41999843415627125, accuracy: 0.5235955056179775, n_scored: 445}, kaggle: pending_user_confirmation, shared_task: pending_user_confirmation, official_status: pending_user_confirmation}
+    official_confirmation: {required: true, confirmed: false, confirmation_source: none, confirmation_notes: none}
+    confidence: medium
+
+  EXP009:
+    name: GLM-4.6V-Flash zero-shot (OLD, truncated 610/1800, degenerate)
+    status: VALID
+    source_notebooks:
+      - notebooks/valid/EXP009__glm46v_flash__image_caption__zeroshot_truncated.ipynb
+    original_filenames:
+      - loading-encoded-astroclimb-images (8).ipynb
+    model: {family: GLM, name: zai-org/GLM-4.6V-Flash, version: unknown, provider: Zhipu, checkpoint: zai-org/GLM-4.6V-Flash, architecture: Glm4vForConditionalGeneration (Has generate True, Has chat False)}
+    dataset: {name: competitions/astroclimb train.csv (OLD 7-col), source: /kaggle/input/competitions/astroclimb/train.csv, configuration: 1800 balanced target, split: truncated eval 610/1800 (6.5h guard hit)}
+    modality: {image: true, caption: true, text: true, other: none}
+    method: {type: zeroshot_generation_eval_truncated_degenerate, trained: false, fine_tuned: false}
+    prompting: {strategy: zero-shot, few_shot: false, reasoning: none, output_format: lowercase label only}
+    training: none
+    inference: {max_new_tokens: unknown, do_sample: false, batch_size: 1, precision: bf16 sharded (4-bit OOM, fell back), platform: Kaggle GPU T4 x2}
+    evaluation: {split: truncated 610/1800, metric: macro-F1, macro_f1: 0.10196078431372549, accuracy: 0.25573770491803277, per_class_f1: {same_figure: 0.0, same_paper: 0.0, related_papers: 0.0, unrelated_papers: 0.4078}, note: degenerate toward unrelated_papers; trailing viz cell IndexError (610 vs 1800) does not affect metric}
+    results: {local: {macro_f1: 0.10196078431372549, accuracy: 0.25573770491803277, n_scored: 610}, kaggle: pending_user_confirmation, shared_task: pending_user_confirmation, official_status: pending_user_confirmation}
+    official_confirmation: {required: true, confirmed: false, confirmation_source: none, confirmation_notes: none}
+    confidence: low
+
+  EXP010:
+    name: Gemma4-E4B v2-fresh adapter submission (test 10k, completed)
+    status: VALID
+    source_notebooks:
+      - notebooks/valid/EXP010__gemma4_e4b_v2fresh_adapter__test__submission.ipynb
+    original_filenames:
+      - 3-5gemmae4bsubmission (1).ipynb
+    model: {family: Gemma4, name: google/gemma-4-E4B-it, version: unknown, provider: Google, checkpoint: google/gemma-4-E4B-it + ShivRamSaud/gemma4-e4b-qlora-astroclimb-v2-fresh/adapter_best (best at 3.1ep)}
+    dataset: {name: competitions/astroclimb test.csv, source: /kaggle/input/competitions/astroclimb/test.csv, configuration: 10000 rows (obj_1/obj_2 only, no labels), split: official test}
+    method: {type: finetuned_inference_submission, trained: true, fine_tuned: true}
+    prompting: {strategy: zero-shot, system_prompt_file: experiments/prompts/EXP010_system.txt, output_format: lowercase label only, parsing: one-hot to submission columns}
+    inference: {max_new_tokens: 32, do_sample: false, quantization: 4-bit NF4, device_map: auto max_memory {0: 14GB, 1: 14GB}, platform: Kaggle GPU T4 x2, resumable: true via HF submission/submission_progress.csv}
+    evaluation: {split: official test (no ground truth locally), metric: none locally, pred_distribution: {unrelated_papers: 4253, same_paper: 3005, related_papers: 2058, same_figure: 684}, n_scored: 10000, n_total: 10000}
+    results: {local: none (test labels unavailable), kaggle: pending_user_confirmation, shared_task: pending_user_confirmation, official_status: pending_user_confirmation}
+    artifacts: {submission: ShivRamSaud/gemma4-e4b-qlora-astroclimb-v2-fresh/submission/submission.csv, progress: submission/submission_progress.csv, raw: submission/raw_test.jsonl}
+    official_confirmation: {required: true, confirmed: false, confirmation_source: none, confirmation_notes: user must confirm whether this submission was uploaded and its leaderboard score}
+    confidence: high
+
+  EXP011:
+    name: Gemma4-E4B BASE zero-shot submission (test 10k, completed)
+    status: VALID
+    source_notebooks:
+      - notebooks/valid/EXP011__gemma4_e4b_base__test__submission.ipynb
+    original_filenames:
+      - baselineastroclimb-submission (1).ipynb
+    model: {family: Gemma4, name: google/gemma-4-E4B-it, version: unknown, provider: Google, checkpoint: google/gemma-4-E4B-it (no adapter)}
+    dataset: {name: competitions/astroclimb test.csv, source: /kaggle/input/competitions/astroclimb/test.csv, configuration: 10000 rows, split: official test}
+    method: {type: zeroshot_inference_submission, trained: false, fine_tuned: false}
+    prompting: {strategy: zero-shot, system_prompt_file: experiments/prompts/EXP011_system.txt, output_format: lowercase label only}
+    inference: {max_new_tokens: 32, do_sample: false, platform: Kaggle GPU T4 x2, resumable: true (resumed 6717 rows from HF)}
+    evaluation: {split: official test, metric: none locally, pred_distribution: {same_figure: 3591, unrelated_papers: 3396, same_paper: 2228, related_papers: 785}, n_scored: 10000}
+    results: {local: none, kaggle: pending_user_confirmation, shared_task: pending_user_confirmation, official_status: pending_user_confirmation}
+    artifacts: {submission: ShivRamSaud/gemma4-e4b-BASE-submit/submission/submission.csv}
+    official_confirmation: {required: true, confirmed: false, confirmation_source: none, confirmation_notes: user must confirm upload + score}
+    confidence: high
+
+  EXP012:
+    name: SmolVLM-500M LoRA adapter submission (test 10k, completed, suspicious distribution)
+    status: VALID
+    source_notebooks:
+      - notebooks/valid/EXP012__smolvlm_500m_lora__test__submission.ipynb
+    original_filenames:
+      - smolsubmissiontest (1).ipynb
+    model: {family: SmolVLM, name: HuggingFaceTB/SmolVLM-500M-Instruct, version: unknown, provider: HuggingFaceTB, checkpoint: HuggingFaceTB/SmolVLM-500M-Instruct + ShivRamSaud/smolvlm-500m-lora-astroclimb/adapter_best (best eval_loss 0.30)}
+    dataset: {name: competitions/astroclimb test.csv, source: /kaggle/input/competitions/astroclimb/test.csv, configuration: 10000 rows, split: official test}
+    method: {type: lora_finetuned_inference_submission, trained: true, fine_tuned: true}
+    prompting: {strategy: zero-shot, system_prompt_file: experiments/prompts/EXP012_system.txt, output_format: lowercase label only}
+    inference: {max_new_tokens: 32, do_sample: false, platform: Kaggle GPU T4 x2}
+    evaluation: {split: official test, metric: none locally, pred_distribution: {same_paper: 6884, related_papers: 2211, same_figure: 905, unrelated_papers: 0}, warning: zero unrelated_papers predictions is anomalous and suggests collapsed/biased decoding; flag before trusting}
+    results: {local: none, kaggle: pending_user_confirmation, shared_task: pending_user_confirmation, official_status: pending_user_confirmation}
+    artifacts: {submission: ShivRamSaud/smolvlm-500m-lora-astroclimb/submission/submission.csv}
+    official_confirmation: {required: true, confirmed: false, confirmation_source: none, confirmation_notes: user must confirm upload + score}
+    confidence: medium

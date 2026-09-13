@@ -1,0 +1,21 @@
+__pycache__/
+.ipynb_checkpoints/
+*.pyc
+.env
+.env.*
+.venv/
+venv/
+virtualenv/
+.DS_Store
+*.log
+# large artifacts (documented, not committed)
+*.safetensors
+*.bin
+*.pt
+*.ckpt
+*.npy
+*.csv
+*.png
+checkpoints/
+object_images*/
+.kaggle/

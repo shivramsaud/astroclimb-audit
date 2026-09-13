@@ -1,0 +1,105 @@
+# Every non-valid notebook accounted for. No notebook silently disappeared (23/23).
+- notebook: notebooks/excluded/EXCLUDED__v2fresh_adapter_submit__failed_4021_unscored.ipynb
+  original: 3-5gemmae4bsubmission (2).ipynb
+  status: EXCLUDED_FAILED
+  reason: >
+    Same v2-fresh adapter submission as EXP010 but the run died with
+    AssertionError: 4021 ids unscored (only ~200 rows resumed from HF progress).
+    No submission.csv was produced in this session.
+  failure_location: final assertion cell (cell8)
+  error: AssertionError: 4021 ids unscored - run another session to resume
+  alternative_versions_searched: true
+  compatible_version_found: true
+  recovered_by: EXP010 (notebooks/valid/EXP010__gemma4_e4b_v2fresh_adapter__test__submission.ipynb, 10000/10000)
+  metric_available: false
+- notebook: notebooks/excluded/EXCLUDED__merged_best_submit__failed_3136_unscored_a.ipynb
+  original: astroclimb-submission (1).ipynb
+  status: EXCLUDED_FAILED
+  reason: >
+    merged_best submission over test.csv 10k; HF push hit 503 Service Unavailable
+    mid-run; session ended with 3136 ids unscored. No submission.csv in this session.
+  failure_location: final assertion cell (cell8)
+  error: AssertionError: 3136 ids unscored
+  alternative_versions_searched: true
+  compatible_version_found: false
+  recovered_by: none (no completed merged_best submission exists in this directory; EXP010/EXP011/EXP012 are different checkpoints)
+  metric_available: false
+- notebook: notebooks/excluded/EXCLUDED__merged_best_submit__failed_3136_unscored_b.ipynb
+  original: astroclimb-submission (2).ipynb
+  status: DUPLICATE
+  reason: Byte-exact duplicate (sha256 ffbaf46b19cc7eaa) of the failed merged_best submission above; same failure, same exclusion.
+  alternative_versions_searched: true
+  compatible_version_found: false
+  metric_available: false
+- notebook: notebooks/excluded/EXCLUDED__internvl3_5_8b__failed_oom_nometric.ipynb
+  original: loading-encoded-astroclimb-images (2).ipynb
+  status: EXCLUDED_FAILED
+  reason: >
+    OpenGVLab/InternVL3_5-8B-HF zero-shot eval on OLD train.csv drowned in ~60 CUDA OOMs
+    (5.73 GiB alloc attempts on 14.56 GiB T4s); only 1301/1800 predictions usable and the
+    final metrics cell crashed with ValueError [1800, 1301]. No trustworthy metric.
+  failure_location: inference loop (cell9 OOMs) + metrics cell (cell11 ValueError)
+  error: ValueError: Found input variables with inconsistent numbers of samples: [1800, 1301]
+  alternative_versions_searched: true
+  compatible_version_found: false
+  metric_available: false
+- notebook: notebooks/excluded/EXCLUDED__gemmae4b_smoke_10samples__no_metric.ipynb
+  original: gemmae4b-smoke-test.ipynb
+  status: EXCLUDED_NO_METRIC
+  reason: >
+    Deliberate 10-sample smoke test of the Gemma4-E4B QLoRA pipeline (train 10 -> val 10).
+    Generate check passed; no evaluation metric was ever computed by design.
+  alternative_versions_searched: true
+  compatible_version_found: false
+  metric_available: false
+- notebook: notebooks/excluded/EXCLUDED__glm41v_9b_qlora_ddp__train_only.ipynb
+  original: notebook5061bf6572.ipynb
+  status: EXCLUDED_NO_METRIC
+  reason: >
+    GLM-4.1V-9B-Thinking QLoRA DDP 2xT4 finetune setup (LoRA r16, HF dataset
+    ShivRamSaud/astroclimb_train, durable HF checkpoints). Training scaffolding only;
+    no generation eval or metric ran in-notebook.
+  alternative_versions_searched: true
+  compatible_version_found: false
+  note: EXP008 evaluates the same base checkpoint family zero/few-shot, but with a different method (no finetune), so no VALID_RECONSTRUCTED merge was made.
+  metric_available: false
+- notebook: notebooks/excluded/EXCLUDED__glm41v_9b_qlora_ddp__train_only_duplicate.ipynb
+  original: notebookb3b58ceefd.ipynb
+  status: DUPLICATE
+  reason: Near-duplicate of the GLM train-only notebook above; same exclusion reason.
+  metric_available: false
+- notebook: notebooks/excluded/EXCLUDED__smolvlm_500m_lora__train_only_eval_syntax_error.ipynb
+  original: smolvlmfinetune (2).ipynb
+  status: EXCLUDED_NO_METRIC
+  reason: >
+    SmolVLM-500M LoRA finetune training SUCCEEDED (Idefics3, 19.1M trainable / 3.63%,
+    ckpt 400/800 pushed, best loss 0.302887499332428, adapter_best pushed to
+    ShivRamSaud/smolvlm-500m-lora-astroclimb) but the in-notebook eval cell has
+    SyntaxError: unmatched ')' and never ran. No local validation metric exists.
+    EXP012 consumes this adapter for test submission, but test has no labels, so no
+    VALID_RECONSTRUCTED metric can be claimed either.
+  failure_location: eval cell (cell10 SyntaxError)
+  error: SyntaxError: unmatched ')' (line 64 of generated eval script)
+  alternative_versions_searched: true
+  compatible_version_found: false
+  metric_available: false
+- notebook: notebooks/excluded/EXCLUDED__smolvlm_500m_lora__train_only_duplicate.ipynb
+  original: smolvlmfinetune (3).ipynb
+  status: DUPLICATE
+  reason: Byte-exact duplicate (sha256 95fe85b95e191519) of the SmolVLM train-only notebook above.
+  metric_available: false
+- notebook: notebooks/excluded/SUPERSEDED__qwen3_vl_8b_thinking__same_as_EXP004.ipynb
+  original: baseline-qwen (2).ipynb
+  status: SUPERSEDED
+  reason: >
+    Same Qwen3-VL-8B-Thinking zero-shot experiment as EXP004 (macro-F1 0.1060 vs 0.1068,
+    same code, same degenerate profile). EXP004 kept as primary; this copy preserved for provenance.
+  alternative_versions_searched: true
+  compatible_version_found: true
+  recovered_by: EXP004
+  metric_available: true
+- notebook: notebooks/excluded/DUPLICATE__smolvlm_500m_fallback__exact_dup_of_EXP007.ipynb
+  original: loading-encoded-astroclimb-images (6).ipynb
+  status: DUPLICATE
+  reason: Byte-exact duplicate (sha256 21db1f7bd29d219b) of EXP007.
+  metric_available: true

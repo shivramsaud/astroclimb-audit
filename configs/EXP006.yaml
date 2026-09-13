@@ -1,0 +1,9 @@
+# EXP006 reproducibility config (documentation artifact; notebook is authoritative).
+experiment: EXP006
+prompt_file: experiments/prompts/EXP006_system.txt
+model: moonshotai/Kimi-VL-A3B-Thinking
+data: NEW sampled 1800
+method: fewshot-4 thinking (all-OOM fallback)
+platform: Kaggle T4x2
+elapsed_h: 4.2
+note: OOM every sample -> unrelated_papers

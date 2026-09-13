@@ -1,0 +1,14 @@
+# EXP002 reproducibility config (documentation artifact; notebook is authoritative).
+experiment: EXP002
+prompt_file: experiments/prompts/EXP002_system.txt
+model: google/gemma-4-E4B-it (bf16 sharded)
+data: OLD train.csv 1800 balanced
+method: zeroshot
+max_new_tokens: 32
+do_sample: False
+batch: 1
+image: base64+thumbnail
+caption_chars: 2000
+device: auto {0:10GB,1:10GB}
+platform: Kaggle T4x2
+elapsed_h: 5.9

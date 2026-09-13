@@ -1,0 +1,9 @@
+# EXP009 reproducibility config (documentation artifact; notebook is authoritative).
+experiment: EXP009
+prompt_file: experiments/prompts/EXP009_system.txt
+model: zai-org/GLM-4.6V-Flash (bf16 fallback)
+data: OLD train.csv truncated 610/1800
+method: zeroshot
+batch: 1
+platform: Kaggle T4x2
+note: degenerate toward unrelated_papers
