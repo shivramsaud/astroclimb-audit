@@ -1,0 +1,24 @@
+# EXP013 reproducibility config (documentation artifact; notebook is authoritative).
+experiment: EXP013
+prompt_file: none (training; same descriptive contract, answer-only supervision)
+model: google/gemma-4-E4B-it
+data: hf://ShivRamSaud/astroclimb_train/train.csv (OLD 10k) -> train 8200 / val 1800 balanced
+method: QLoRA SFT
+platform: Lightning AI cloudspace, 1x A100-SXM4-80GB
+epochs_max: 8
+steps_per_epoch: 512
+actual_steps: ~1600 (~3.1ep inferred)
+best_eval_loss: 0.34641456604003906
+best_step: checkpoint-1000 (~1.95ep inferred)
+eval_every: 200
+early_stopping_patience: 3
+batch: 2
+grad_accum: 8
+eff_batch: 16
+lr: 1e-4
+lora: r64 alpha128 dropout0.05 targets=[q_proj,k_proj,v_proj,o_proj,gate_proj,up_proj,down_proj]
+precision: bf16
+quant: 4-bit NF4
+max_seq_len: 1536
+hf_output: ShivRamSaud/gemma4-e4b-qlora-astroclimb-v2-fresh/adapter_best
+software: torch 2.8.0+cu128, transformers 5.16.1, bitsandbytes 0.50.2, peft 0.20.0, trl 1.12.0

@@ -117,3 +117,13 @@
   original_filename: loading-encoded-astroclimb-images (6).ipynb
   corrected_filename: notebooks/excluded/DUPLICATE__smolvlm_500m_fallback__exact_dup_of_EXP007.ipynb
   reason: Byte-exact duplicate (sha 21db1f7bd29d219b) of EXP007.
+- experiment_id: EXP013
+  original_filename: lightning_gemma_e4b_qlora_80gb (1) (1).ipynb
+  corrected_filename: notebooks/valid/EXP013__gemma4_e4b__qlora_finetune__lightning_a100.ipynb
+  reason: >
+    Lightning AI training notebook (cloudspace kernel, A100-80GB) added by the user
+    after the first audit. It QLoRA-finetunes google/gemma-4-E4B-it (r64/a128, LR 1e-4,
+    max 8 epochs + early stopping) and pushes adapter_best to
+    ShivRamSaud/gemma4-e4b-qlora-astroclimb-v2-fresh - the artifact behind EXP010
+    and the official 0.64282 submission. Training completed (best eval_loss 0.3464
+    at step-1000, run continued to ~step-1600).

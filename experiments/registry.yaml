@@ -70,12 +70,14 @@ experiments:
       n_skipped: 0
     results:
       local: {macro_f1: 0.6170137014077717, accuracy: 0.6238888888888889}
-      kaggle: pending_user_confirmation
-      shared_task: pending_user_confirmation
-      official_status: pending_user_confirmation
+      kaggle: 0.40088
+      shared_task: unknown
+      official_status: confirmed_by_user
     artifacts: {checkpoint: ShivRamSaud/gemma4-e4b-qlora-astroclimb/merged_best (merged in-notebook), predictions: preds_val_final.npy, metrics: metrics.json, confusion: confusion.png, raw: raw_outputs.jsonl + raw_outputs_final.jsonl}
     provenance: {train_notebook: external (adapter_best from HF), evaluation_notebook: EXP001 notebook, versions_merged: none, reconstruction_notes: none - single notebook completed end to end}
-    official_confirmation: {required: true, confirmed: false, confirmation_source: none, confirmation_notes: was this adapter/eval tied to an official submission? Awaiting user.}
+    official_submission: {checkpoint: v1 adapter_best ~900 steps (~1.8 epochs, inferred) merged to merged_best, note: in-directory submission notebooks for merged_best failed (see excluded); user confirms a completed submission of this lineage scored 0.40088. No completed local submission run is preserved.}
+    official_gap_note: local NEW-val macro-F1 0.6170 vs official test 0.40088 (-0.216) - distribution shift between sampled val and official test; both figures preserved.
+    official_confirmation: {required: true, confirmed: true, confirmation_source: user (leaderboard screenshot Image 1 + text mapping: second-highest = same model 1.8ep), confirmation_notes: user-mapped; epoch identity 900 steps/512ep = 1.76ep inferred, consistent with user 1.8ep}
     confidence: high
     notes: Best local metric in the directory. Old-format baseline 0.4408 is different rows, not comparable (notebook says so explicitly).
     limitations: Adapter training hyperparameters not recorded in this notebook; test-set generalization unknown.
@@ -270,9 +272,10 @@ experiments:
     prompting: {strategy: zero-shot, system_prompt_file: experiments/prompts/EXP010_system.txt, output_format: lowercase label only, parsing: one-hot to submission columns}
     inference: {max_new_tokens: 32, do_sample: false, quantization: 4-bit NF4, device_map: auto max_memory {0: 14GB, 1: 14GB}, platform: Kaggle GPU T4 x2, resumable: true via HF submission/submission_progress.csv}
     evaluation: {split: official test (no ground truth locally), metric: none locally, pred_distribution: {unrelated_papers: 4253, same_paper: 3005, related_papers: 2058, same_figure: 684}, n_scored: 10000, n_total: 10000}
-    results: {local: none (test labels unavailable), kaggle: pending_user_confirmation, shared_task: pending_user_confirmation, official_status: pending_user_confirmation}
+    results: {local: none (test labels unavailable), kaggle: 0.64282, shared_task: unknown, official_status: confirmed_by_user}
     artifacts: {submission: ShivRamSaud/gemma4-e4b-qlora-astroclimb-v2-fresh/submission/submission.csv, progress: submission/submission_progress.csv, raw: submission/raw_test.jsonl}
-    official_confirmation: {required: true, confirmed: false, confirmation_source: none, confirmation_notes: user must confirm whether this submission was uploaded and its leaderboard score}
+    epoch_note: EXP010 notebook labels adapter_best best at 3.1ep; Lightning session log (EXP013) shows run to ~step-1600 (~3.1ep) with best eval_loss at step-1000; user describes winning model as 3.5ep. Treated as the same run with approximate epoch reporting; HF adapter_best is mutable and may postdate the session.
+    official_confirmation: {required: true, confirmed: true, confirmation_source: user (leaderboard screenshot Image 1 + text mapping: highest = 3.5ep e4b gemma trained on Lightning, submission via Kaggle test run), confirmation_notes: leaderboard Score column value; presumed macro-F1 per task metric, not independently verified}
     confidence: high
 
   EXP011:
@@ -288,9 +291,9 @@ experiments:
     prompting: {strategy: zero-shot, system_prompt_file: experiments/prompts/EXP011_system.txt, output_format: lowercase label only}
     inference: {max_new_tokens: 32, do_sample: false, platform: Kaggle GPU T4 x2, resumable: true (resumed 6717 rows from HF)}
     evaluation: {split: official test, metric: none locally, pred_distribution: {same_figure: 3591, unrelated_papers: 3396, same_paper: 2228, related_papers: 785}, n_scored: 10000}
-    results: {local: none, kaggle: pending_user_confirmation, shared_task: pending_user_confirmation, official_status: pending_user_confirmation}
+    results: {local: none, kaggle: 0.39754, shared_task: unknown, official_status: confirmed_by_user}
     artifacts: {submission: ShivRamSaud/gemma4-e4b-BASE-submit/submission/submission.csv}
-    official_confirmation: {required: true, confirmed: false, confirmation_source: none, confirmation_notes: user must confirm upload + score}
+    official_confirmation: {required: true, confirmed: true, confirmation_source: user (leaderboard screenshot Image 1 + text mapping: third-highest = same model baseline on official test), confirmation_notes: leaderboard Score column value; presumed macro-F1, not independently verified}
     confidence: high
 
   EXP012:
@@ -306,7 +309,57 @@ experiments:
     prompting: {strategy: zero-shot, system_prompt_file: experiments/prompts/EXP012_system.txt, output_format: lowercase label only}
     inference: {max_new_tokens: 32, do_sample: false, platform: Kaggle GPU T4 x2}
     evaluation: {split: official test, metric: none locally, pred_distribution: {same_paper: 6884, related_papers: 2211, same_figure: 905, unrelated_papers: 0}, warning: zero unrelated_papers predictions is anomalous and suggests collapsed/biased decoding; flag before trusting}
-    results: {local: none, kaggle: pending_user_confirmation, shared_task: pending_user_confirmation, official_status: pending_user_confirmation}
+    results: {local: none, kaggle: 0.23675, shared_task: unknown, official_status: confirmed_by_user}
     artifacts: {submission: ShivRamSaud/smolvlm-500m-lora-astroclimb/submission/submission.csv}
-    official_confirmation: {required: true, confirmed: false, confirmation_source: none, confirmation_notes: user must confirm upload + score}
+    official_confirmation: {required: true, confirmed: true, confirmation_source: user (leaderboard screenshot Image 1 + text mapping: lowest = smolvlm500 finetuned), confirmation_notes: leaderboard Score column value; presumed macro-F1, not independently verified}
     confidence: medium
+
+  EXP013:
+    name: Gemma4-E4B QLoRA finetune training on Lightning A100 (produces v2-fresh adapter_best)
+    status: VALID
+    source_notebooks:
+      - notebooks/valid/EXP013__gemma4_e4b__qlora_finetune__lightning_a100.ipynb
+    original_filenames:
+      - lightning_gemma_e4b_qlora_80gb (1) (1).ipynb
+    model: {family: Gemma4, name: google/gemma-4-E4B-it, version: unknown, provider: Google, checkpoint: google/gemma-4-E4B-it, architecture: Gemma4ForConditionalGeneration}
+    task: {name: AstroCLIMB 4-class pair relation classification, formulation: multiclass single-label, num_classes: 4, labels: [same_figure, same_paper, related_papers, unrelated_papers]}
+    dataset:
+      name: ShivRamSaud/astroclimb_train via HF (OLD train.csv 10k, base64 obj_1/obj_2)
+      source: hf://ShivRamSaud/astroclimb_train/train.csv (local origin /teamspace/studios/this_studio/train (1).zip)
+      configuration: train 8200 + val 1800 balanced (seed 42, same split as SmolVLM/GLM runs)
+      split: train 8200 / val 1800
+    modality: {image: true, caption: true, text: true, other: none}
+    method: {type: qlora_sft_training, trained: true, fine_tuned: true, peft: true, lora: true, qlora: true}
+    prompting: {strategy: zero-shot descriptive (same contract; answer-only supervision, prompt tokens masked), few_shot: false, output_format: lowercase label only}
+    preprocessing: {image: base64 decode + thumbnail(448,448), caption: truncate, labels: answer-only loss masking}
+    training:
+      platform: Lightning AI cloudspace, 1x NVIDIA A100-SXM4-80GB (85.1GB free)
+      epochs_max: 8
+      steps_per_epoch: 512
+      total_steps_planned: ~4100
+      actual_steps: ~1600 (~3.1 epochs; inferred from ckpt-1600 push)
+      best_eval_loss: 0.34641456604003906
+      best_step: checkpoint-1000 (~1.95 epochs; inferred)
+      eval_every: 200 steps
+      early_stopping: patience 3
+      batch_size: 2
+      gradient_accumulation: 8
+      effective_batch_size: 16
+      learning_rate: 1e-4
+      optimizer: unknown (TrainingArguments default AdamW presumed; not verified)
+      lora: {r: 64, alpha: 128, dropout: 0.05, targets: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]}
+      precision: bf16
+      quantization: 4-bit NF4 (QLoRA)
+      max_seq_len: 1536
+      max_steps_cap: 2560
+      seed: unknown
+      software: {torch: 2.8.0+cu128, transformers: 5.16.1, bitsandbytes: 0.50.2, peft: 0.20.0, trl: 1.12.0}
+    inference: none (training notebook; generation eval not run in-notebook - see EXP001/EXP010)
+    evaluation: {split: train-val 1800 (loss only), metric: eval_loss (NOT macro-F1), best_eval_loss: 0.34641456604003906 at step-1000, macro_f1: unknown}
+    results: {local: {best_eval_loss: 0.34641456604003906}, kaggle: not_applicable (training only), shared_task: not_applicable, official_status: not_applicable}
+    artifacts: {adapter_best: ShivRamSaud/gemma4-e4b-qlora-astroclimb-v2-fresh/adapter_best, intermediate_ckpts: [1200, 1600], note: merged push skipped in-session; merged later (see EXP001 pattern)}
+    provenance: {train_notebook: this notebook (15/15 cells executed), evaluation_notebook: EXP001 (NEW 23-col generation eval of this adapter lineage) and EXP010 (test submission), reconstruction_notes: none}
+    downstream_official: {EXP010_test_submission: 0.64282, confirmed_by: user, note: user describes winning adapter as 3.5ep; session log shows run to ~step-1600 (~3.1ep, EXP010 notebook says best at 3.1ep). Same run, approximate epoch reporting; discrepancy documented, not harmonized.}
+    official_confirmation: {required: false, confirmed: true, confirmation_source: user, confirmation_notes: user confirmed this Lightning run produced the finetuned model behind the 0.64282 official submission}
+    confidence: high
+    limitations: Adapter_best on HF is mutable and may postdate this session; exact optimizer/scheduler/warmup not extracted; no generation macro-F1 computed in this notebook.

@@ -22,7 +22,8 @@
   error: AssertionError: 3136 ids unscored
   alternative_versions_searched: true
   compatible_version_found: false
-  recovered_by: none (no completed merged_best submission exists in this directory; EXP010/EXP011/EXP012 are different checkpoints)
+  recovered_by: none in-directory (both preserved copies failed); BUT user confirms a completed merged_best-lineage (v1 ~1.8ep) submission scored official 0.40088 (see EXP001 official_submission). The completed session notebook is not preserved locally.
+  user_confirmed_official: {score: 0.40088, mapped_to: EXP001 lineage, source: user leaderboard screenshot + mapping}
   metric_available: false
 - notebook: notebooks/excluded/EXCLUDED__merged_best_submit__failed_3136_unscored_b.ipynb
   original: astroclimb-submission (2).ipynb

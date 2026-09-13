@@ -4,12 +4,12 @@
 
 This repository is a forensic reconstruction of AstroCLIMB modeling work. The `wasp/` parent folder held
 source notebooks that were uploaded to Kaggle; this directory (`OUTPUT NOTEBOOKS`, the audit root) holds the
-23 notebooks downloaded back from Kaggle after execution. Filenames, notebook titles and markdown claims from
+24 notebooks downloaded back from Kaggle/Lightning after execution (23 in the first audit + 1 Lightning training notebook added by the user afterwards). Filenames, notebook titles and markdown claims from
 those downloads were **untrusted**: several filenames contradict their own code (e.g. `baseline-qwen (1).ipynb`
 actually runs Gemma4-E4B; `loading-encoded-astroclimb-images (*).ipynb` hides 8 different models).
 
 Every notebook was inspected (code + executed outputs). Notebooks were renamed to reflect their **actual
-implementation**, assigned stable IDs (EXP001–EXP012), and split into `notebooks/valid/` (12 completed
+implementation**, assigned stable IDs (EXP001–EXP013), and split into `notebooks/valid/` (13 completed
 experiments) vs `notebooks/excluded/` (11 duplicates / failed / metric-less runs, all preserved with reasons
 in `experiments/excluded.yaml`). Only runs with trustworthy **local** evaluation evidence (or completed
 test-submission inference) are listed as valid. No official score is claimed without user confirmation.
@@ -73,7 +73,7 @@ with **official** Kaggle/shared-task scores (all pending user confirmation).
 
 | ID | Model | Data | Method | Prompting | Eval | Local Macro-F1 | Official | Confirm |
 |----|---|---|---|---|---|---|---|---|
-| EXP001 | Gemma4-E4B + QLoRA adapter_best → merged_best | NEW 1800 full | finetuned eval | zero-shot, greedy 32 | val 1800 | **0.6170** (acc 0.6239) | — | pending user confirmation |
+| EXP001 | Gemma4-E4B + v1 QLoRA adapter_best (~1.8ep) → merged_best | NEW 1800 full | finetuned eval | zero-shot, greedy 32 | val 1800 | **0.6170** (acc 0.6239) | **0.40088** | confirmed by user |
 | EXP002 | Gemma4-E4B (bf16) | OLD 1800 full | zero-shot | zero-shot, greedy 32 | bal 1800 | 0.4408 (acc 0.5206) | — | pending |
 | EXP003 | Gemma4-E4B thinking | NEW 1800 full* | few-shot eval | 4-shot + think | 1800 | 0.3925 (acc 0.5050) | — | pending (*dataset grouping ambiguous, see report) |
 | EXP004 | Qwen3-VL-8B-Thinking | OLD 1800 full | zero-shot | zero-shot + think | bal 1800 | 0.1068 (degenerate) | — | pending |
@@ -82,9 +82,10 @@ with **official** Kaggle/shared-task scores (all pending user confirmation).
 | EXP007 | SmolVLM-500M-Instruct (fallback) | OLD 1800 full | zero-shot | zero-shot, greedy 32 | bal 1800 | 0.1723 | — | pending |
 | EXP008 | GLM-4.1V-9B-Thinking-bnb-4bit | NEW 445 subset | few-shot | 4-shot + think | trunc 445 | 0.4200 (subset) | — | pending |
 | EXP009 | GLM-4.6V-Flash (bf16) | OLD 610 subset | zero-shot | zero-shot | trunc 610 | 0.1020 (degenerate) | — | pending |
-| EXP010 | Gemma4-E4B + v2-fresh adapter (3.1ep) | test 10k | submission | greedy 32 | test (no labels) | n/a (10000/10000 scored) | — | pending |
-| EXP011 | Gemma4-E4B BASE | test 10k | submission | greedy 32 | test (no labels) | n/a (10000/10000 scored) | — | pending |
-| EXP012 | SmolVLM-500M + LoRA adapter | test 10k | submission | greedy 32 | test (no labels) | n/a (10000/10000, 0 unrelated!) | — | pending |
+| EXP010 | Gemma4-E4B + v2-fresh adapter (~3.1–3.5ep, EXP013) | test 10k | submission | greedy 32 | test (no labels) | n/a (10000/10000 scored) | **0.64282** | confirmed by user |
+| EXP011 | Gemma4-E4B BASE | test 10k | submission | greedy 32 | test (no labels) | n/a (10000/10000 scored) | **0.39754** | confirmed by user |
+| EXP012 | SmolVLM-500M + LoRA adapter | test 10k | submission | greedy 32 | test (no labels) | n/a (10000/10000, 0 unrelated!) | **0.23675** | confirmed by user |
+| EXP013 | Gemma4-E4B QLoRA finetune (Lightning A100) | OLD 8200/1800 | training (SFT) | answer-only | train-val (loss) | best eval_loss 0.3464 @step-1000 | n/a (training) | confirmed (provenance) |
 
 ## Results
 
@@ -105,7 +106,8 @@ distribution (0/10000 unrelated_papers) is anomalous and flagged.
 
 | Run | Train? | Method | Rank/targets | Quant | Precision | Batch | Seq | Steps/loss |
 |---|---|---|---|---|---|---|---|---|
-| EXP001 (eval) | adapter external | QLoRA eval+merge | unknown | NF4 4-bit, double_quant, bf16 compute | bf16 | unknown | unknown | 900 steps, best val_loss 0.3489 |
+| EXP001 (eval) | adapter external (v1, ~1.8ep) | QLoRA eval+merge | unknown | NF4 4-bit, double_quant, bf16 compute | bf16 | unknown | unknown | 900 steps, best val_loss 0.3489 | official test 0.40088 (user-confirmed) |
+| EXP013 (train) | yes, Lightning A100-80GB | QLoRA SFT r64/a128 | r64, 7 targets | NF4 4-bit | bf16 | 2×8 eff 16 | 1536 | ~1600 steps (~3.1ep), best loss 0.3464 @step-1000; downstream official 0.64282 |
 | EXP012 (infer) / excluded train | yes (excluded nb) | LoRA SmolVLM | r32, q/k/v/o/gate/up/down | none | fp16 | 1×16 eff 16 | 2048 | ckpt 400/800, best 0.3029 |
 | excluded GLM train | yes (no eval) | QLoRA DDP 2×T4 | r16 | pre-quant bnb-4bit | bf16 | 1 | 2048 | unknown |
 | all others | no | zero/few-shot | — | NF4 or bf16 fallback (see reports) | bf16/fp16 | infer 1 | — | — |
@@ -148,17 +150,26 @@ eval — different methods (finetune vs no-finetune), no shared adapter evaluati
 
 ## Official Test Results and Submission Confirmation
 
-All official results are **pending user confirmation**. No Kaggle leaderboard or shared-task score is claimed
-anywhere in this repository. For each submitted experiment (EXP010/EXP011/EXP012) the registry records:
+User-confirmed via leaderboard screenshot (Image 1, four `submission.zip` by Shivram Saud) + text mapping.
+Scores are the leaderboard Score column (presumed macro-F1 per task metric, not independently verified).
+Shared-task scores: unknown. No submission/run IDs were provided.
 
-```yaml
-official_confirmation: {required: true, confirmed: false, confirmation_source: none}
-results: {kaggle: pending_user_confirmation, shared_task: pending_user_confirmation}
-```
+| Official rank | Score | User mapping | Repository experiment | Status |
+|---|---|---|---|---|
+| 1st (selected) | **0.64282** (6d ago) | 3.5ep e4b gemma trained on Lightning, test run on Kaggle | EXP010 (v2-fresh adapter; adapter from EXP013) | confirmed by user |
+| 2nd | **0.40088** (7d ago) | same model, 1.8ep trained | EXP001 lineage (v1 ~900-step ≈1.76ep adapter → merged_best) | confirmed by user (no completed local submission run preserved; in-dir twins failed) |
+| 3rd | **0.39754** (6d ago) | same model, baseline on official test | EXP011 (BASE zero-shot) | confirmed by user |
+| 4th | **0.23675** (6d ago) | smolvlm500 finetuned | EXP012 (SmolVLM LoRA) | confirmed by user |
 
-To finalize: provide, per experiment, the official macro-F1/leaderboard score, which notebook/run was
-officially submitted, and any submission/run ID. Confirmed values will be recorded alongside (never
-overwriting) the local metrics above.
+Local vs official (kept separate, never overwritten): EXP001 lineage local NEW-val 0.6170 vs official 0.40088
+(-0.216 gap — sampled-val/test distribution shift). EXP010/011/012 have no local metric (test unlabeled).
+
+Known reporting conflicts (preserved, not harmonized): (a) winning-model epochs — EXP010 notebook says
+adapter_best "best at 3.1ep", Lightning session log (EXP013) shows best eval_loss at step-1000 (~1.95ep inferred)
+with the run continuing to ~step-1600 (~3.1ep inferred), user states "3.5ep" — treated as one run with approximate
+epoch reporting; HF adapter_best is mutable and may postdate the session. (b) The completed 0.40088 submission
+session has no preserved notebook (the two in-directory merged_best attempts failed with 3136 unscored);
+attribution to the v1 adapter lineage rests on converging evidence + user confirmation.
 
 ## Reproducibility
 

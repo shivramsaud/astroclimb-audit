@@ -10,7 +10,7 @@ rmap = (root/"experiments/notebook_rename_map.yaml").read_text(encoding="utf-8")
 exp_ids = sorted(set(re.findall(r"EXP\d{3}", reg)))
 print(f"valid notebooks: {len(valid)}")
 print(f"excluded notebooks: {len(excluded)}")
-print(f"total notebooks: {len(valid)+len(excluded)} (expect 23)")
+print(f"total notebooks: {len(valid)+len(excluded)} (expect 24: 13 valid + 11 excluded)")
 print(f"reports: {len(reports)}")
 print(f"registry experiments: {exp_ids}")
 missing_reports = [e for e in exp_ids if not (root/f"experiments/reports/{e}.md").exists()]
