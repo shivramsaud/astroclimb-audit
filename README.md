@@ -30,8 +30,8 @@ Two data formats appear in this directory (do not mix them):
 
 | Format | Path on Kaggle | Columns | Images | Used by |
 |---|---|---|---|---|
-| NEW 23-col sampled | `/kaggle/input/datasets/jcxiv42/astroclimb/astroclimb_4class(sampled).csv` + `object_images_sampled/{uuid}.png` | 23 cols incl. `object_*_uuid`, `object_*_content`, `label` (0=same_paper,1=related_papers,2=same_figure,3=unrelated_papers), `label_name` | local PNG by UUID (3090 files) | EXP001, EXP003, EXP005, EXP006, EXP008 |
-| OLD 7-col | `/kaggle/input/competitions/astroclimb/train.csv` (`obj_1/obj_2` base64-or-text) + `test.csv` (10k, `obj_1/obj_2` only) | 7 cols, base64 images inline | base64 decode | EXP002, EXP004, EXP007, EXP009, EXP010, EXP011, EXP012 |
+| NEW 23-col sampled | `/kaggle/input/datasets/jcxiv42/astroclimb/astroclimb_4class(sampled).csv` + `object_images_sampled/{uuid}.png` | 23 cols incl. `object_*_uuid`, `object_*_content`, `label` (0=same_paper,1=related_papers,2=same_figure,3=unrelated_papers), `label_name` | local PNG by UUID (3090 files) | EXP001 (eval) + EXP013-adjacent; EXP003/005/006/008 use it ONLY as few-shot-demo source (eval is OLD) |
+| OLD 7-col | `/kaggle/input/competitions/astroclimb/train.csv` (`obj_1/obj_2` base64-or-text) + `test.csv` (10k, `obj_1/obj_2` only) | 7 cols, base64 images inline | base64 decode | EXP002, EXP003, EXP004, EXP005, EXP006, EXP007, EXP008, EXP009 (eval), EXP010, EXP011, EXP012 (test), EXP013 (train/val) |
 
 ## Task Definition
 
@@ -75,12 +75,12 @@ with **official** Kaggle/shared-task scores (all pending user confirmation).
 |----|---|---|---|---|---|---|---|---|
 | EXP001 | Gemma4-E4B + v1 QLoRA adapter_best (~1.8ep) → merged_best | NEW 1800 full | finetuned eval | zero-shot, greedy 32 | val 1800 | **0.6170** (acc 0.6239) | **0.40088** | confirmed by user |
 | EXP002 | Gemma4-E4B (bf16) | OLD 1800 full | zero-shot | zero-shot, greedy 32 | bal 1800 | 0.4408 (acc 0.5206) | — | pending |
-| EXP003 | Gemma4-E4B thinking | NEW 1800 full* | few-shot eval | 4-shot + think | 1800 | 0.3925 (acc 0.5050) | — | pending (*dataset grouping ambiguous, see report) |
+| EXP003 | Gemma4-E4B thinking | OLD 1800 + NEW demos | few-shot eval | 4-shot + think, 512 tok | 1800 | 0.3925 (acc 0.5050) | — | pending (hybrid OLD-eval/NEW-demos, confirmed) |
 | EXP004 | Qwen3-VL-8B-Thinking | OLD 1800 full | zero-shot | zero-shot + think | bal 1800 | 0.1068 (degenerate) | — | pending |
-| EXP005 | Qwen3-VL-4B-Thinking | NEW 397 subset | few-shot | 4-shot + think, 512 tok | trunc 397 | 0.2497 (subset) | — | pending |
-| EXP006 | Kimi-VL-A3B-Thinking | NEW 1800 full | few-shot | 4-shot + think (all OOM) | 1800 | 0.1000 (degenerate) | — | pending |
+| EXP005 | Qwen3-VL-4B-Thinking | OLD 397-sub + NEW demos | few-shot | 4-shot + think, 512 tok | trunc 397 | 0.2497 (subset) | — | pending |
+| EXP006 | Kimi-VL-A3B-Thinking | OLD 1800 + NEW demos | few-shot | 4-shot + think, 512 tok (all OOM) | 1800 | 0.1000 (degenerate) | — | pending |
 | EXP007 | SmolVLM-500M-Instruct (fallback) | OLD 1800 full | zero-shot | zero-shot, greedy 32 | bal 1800 | 0.1723 | — | pending |
-| EXP008 | GLM-4.1V-9B-Thinking-bnb-4bit | NEW 445 subset | few-shot | 4-shot + think | trunc 445 | 0.4200 (subset) | — | pending |
+| EXP008 | GLM-4.1V-9B-Thinking-bnb-4bit | OLD 445-sub + NEW demos | few-shot | 4-shot + think, 512 tok | trunc 445 | 0.4200 (subset) | — | pending |
 | EXP009 | GLM-4.6V-Flash (bf16) | OLD 610 subset | zero-shot | zero-shot | trunc 610 | 0.1020 (degenerate) | — | pending |
 | EXP010 | Gemma4-E4B + v2-fresh adapter (~3.1–3.5ep, EXP013) | test 10k | submission | greedy 32 | test (no labels) | n/a (10000/10000 scored) | **0.64282** | confirmed by user |
 | EXP011 | Gemma4-E4B BASE | test 10k | submission | greedy 32 | test (no labels) | n/a (10000/10000 scored) | **0.39754** | confirmed by user |
@@ -93,10 +93,10 @@ Ranked full-1800 local macro-F1 (subset/truncated runs excluded from ranking):
 
 1. **EXP001 — 0.6170** (finetuned Gemma4-E4B, NEW)
 2. EXP002 — 0.4408 (zero-shot Gemma4-E4B, OLD; different rows, not strictly comparable)
-3. EXP003 — 0.3925 (few-shot thinking Gemma4-E4B, NEW)
+3. EXP003 — 0.3925 (few-shot thinking Gemma4-E4B, OLD eval — directly comparable to #2: thinking+few-shot underperforms zero-shot 0.4408 on the same 1800)
 4. EXP007 — 0.1723 (SmolVLM-500M, OLD)
 5. EXP004 — 0.1068 (Qwen3-8B thinking, OLD, degenerate)
-6. EXP006 — 0.1000 (Kimi-A3B, NEW, all-OOM degenerate)
+6. EXP006 — 0.1000 (Kimi-A3B, OLD eval, all-OOM degenerate)
 
 Truncated (not rankable): EXP008 0.4200 (445), EXP005 0.2497 (397), EXP009 0.1020 (610).
 Test submissions (no local metric): EXP010, EXP011, EXP012 — all 10000/10000 scored; EXP012's
@@ -112,7 +112,7 @@ distribution (0/10000 unrelated_papers) is anomalous and flagged.
 | excluded GLM train | yes (no eval) | QLoRA DDP 2×T4 | r16 | pre-quant bnb-4bit | bf16 | 1 | 2048 | unknown |
 | all others | no | zero/few-shot | — | NF4 or bf16 fallback (see reports) | bf16/fp16 | infer 1 | — | — |
 
-Common inference: greedy (`do_sample=False`, temperature 0), `max_new_tokens=32` (512 for Qwen-4B thinking),
+Common inference: greedy via `do_sample=False` (no notebook sets `temperature`), `max_new_tokens=32` (512 for thinking few-shot runs EXP003/005/006/008),
 `thumbnail(448,448)`, captions `[:2000]`, `device_map="auto"`, Kaggle GPU T4 x2, 6.5h guard.
 
 ## Prompting Strategies

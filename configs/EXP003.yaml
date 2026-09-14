@@ -2,9 +2,9 @@
 experiment: EXP003
 prompt_file: experiments/prompts/EXP003_system.txt
 model: google/gemma-4-E4B-it thinking
-data: NEW sampled 1800 (OLD-style grouping; see report)
+data: OLD train.csv 1800 eval + NEW sampled demos (hybrid; see report)
 method: fewshot-4 thinking
-max_new_tokens: unknown
+max_new_tokens: 512
 do_sample: False
 batch: 1
 platform: Kaggle T4x2

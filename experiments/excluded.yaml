@@ -57,7 +57,7 @@
   original: notebook5061bf6572.ipynb
   status: EXCLUDED_NO_METRIC
   reason: >
-    GLM-4.1V-9B-Thinking QLoRA DDP 2xT4 finetune setup (LoRA r16, HF dataset
+    GLM-4.1V-9B-Thinking QLoRA DDP 2xT4 finetune setup (LoRA r16/alpha32, LR 1e-4, EPOCHS 3, batch 1, GRAD_ACCUM 8, MAX_SEQ_LEN 2048, CAP_CHARS 1500, HF dataset
     ShivRamSaud/astroclimb_train, durable HF checkpoints). Training scaffolding only;
     no generation eval or metric ran in-notebook.
   alternative_versions_searched: true
@@ -73,7 +73,7 @@
   original: smolvlmfinetune (2).ipynb
   status: EXCLUDED_NO_METRIC
   reason: >
-    SmolVLM-500M LoRA finetune training SUCCEEDED (Idefics3, 19.1M trainable / 3.63%,
+    SmolVLM-500M LoRA finetune training SUCCEEDED (Idefics3, 19.1M trainable / 3.63%, LoRA r32/alpha64, LR 2e-4, EPOCHS 10, batch 1, GRAD_ACCUM 16, MAX_SEQ_LEN 2048, CAP_CHARS 1000,
     ckpt 400/800 pushed, best loss 0.302887499332428, adapter_best pushed to
     ShivRamSaud/smolvlm-500m-lora-astroclimb) but the in-notebook eval cell has
     SyntaxError: unmatched ')' and never ran. No local validation metric exists.

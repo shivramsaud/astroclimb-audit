@@ -14,6 +14,6 @@ FEW-SHOT CONSTRUCTION (EXP003/EXP005/EXP006/EXP008 only): 4 examples prepended (
 sampled seed 42, preferring FIG-CAP/CAP-FIG pairs on NEW data), each as image-before-text
 blocks with its gold label, before the target pair. Zero-shot experiments omit this block.
 THINKING MODELS (EXP003/EXP004/EXP005/EXP006/EXP008): native <think>/<|think|> reasoning enabled;
-MAX_NEW_TOKENS=512 for EXP005 thinking runs, 32 for greedy label-only runs (EXP001/EXP002/EXP004/EXP007/EXP009/EXP010/EXP011/EXP012).
+MAX_NEW_TOKENS=512 for thinking few-shot runs (EXP003/EXP005/EXP006/EXP008; verified in code), 32 for greedy label-only runs (EXP001/EXP002/EXP004/EXP007/EXP009/EXP010/EXP011/EXP012). No notebook sets temperature (greedy via do_sample=False).
 USER MESSAGE TEMPLATE: SYSTEM_PROMPT + per-object blocks (image thumbnail(448,448) with
 'Object A/B: [Figure image]' or 'Object A/B (caption): <text[:2000]>' + 'Answer with one label:').

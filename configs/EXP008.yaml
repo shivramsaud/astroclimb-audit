@@ -2,7 +2,7 @@
 experiment: EXP008
 prompt_file: experiments/prompts/EXP008_system.txt
 model: Rainnighttram/GLM-4.1V-9B-Thinking-bnb-4bit
-data: NEW sampled truncated 445/1800
+data: OLD train.csv truncated 445/1800 eval + NEW sampled demos
 method: fewshot-4 thinking
 batch: 1
 quant: pre-quantized bnb-4bit

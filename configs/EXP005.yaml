@@ -2,7 +2,7 @@
 experiment: EXP005
 prompt_file: experiments/prompts/EXP005_system.txt
 model: Qwen/Qwen3-VL-4B-Thinking
-data: NEW sampled truncated 397/1800
+data: OLD train.csv truncated 397/1800 eval + NEW sampled demos
 method: fewshot-4 thinking
 max_new_tokens: 512
 batch: 1
