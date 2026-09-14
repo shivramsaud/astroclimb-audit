@@ -131,3 +131,12 @@
   original_filename: lightning_gemma_e4b_qlora_80gb.ipynb
   corrected_filename: notebooks/excluded/DUPLICATE__lightning_qlora_finetune__exact_dup_of_EXP013.ipynb
   reason: Byte-exact duplicate (sha256 71b7afc12c716721) of EXP013, re-added by the user under the original filename after the audit; preserved for provenance.
+- experiment_id: null
+  original_filename: D:/wasp/datascience/lightning_gemma_e4b_qlora_80gb_1.8_epoch.ipynb (parent directory; copied, original left in place)
+  corrected_filename: notebooks/excluded/EXCLUDED__gemma4_e4b_v1era_train__failed_oom_no_adapter.ipynb
+  reason: >
+    V1-era Lightning training script (targets ShivRamSaud/gemma4-e4b-qlora-astroclimb,
+    r64/alpha128, LR 1e-4, eff16, cosine, 8200/1800). This preserved session FAILED with
+    CUDA OOM in the trainer (compute_metrics stub gathered 1800x1536x262k logits) and
+    produced no adapter; its max_steps=400 cannot yield the 900-step v1 adapter_best.
+    Kept as recipe-family evidence, not as the 900-step run.

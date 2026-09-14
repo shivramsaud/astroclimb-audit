@@ -109,3 +109,24 @@
   status: DUPLICATE
   reason: Byte-exact duplicate (sha256 71b7afc12c716721) of EXP013 (Lightning QLoRA finetune training, 15/15 cells executed, best eval_loss 0.3464 at step-1000, adapter_best to v2-fresh).
   metric_available: true
+- notebook: notebooks/excluded/EXCLUDED__gemma4_e4b_v1era_train__failed_oom_no_adapter.ipynb
+  original: D:/wasp/datascience/lightning_gemma_e4b_qlora_80gb_1.8_epoch.ipynb (copied 2026-09-14; original unmodified)
+  status: EXCLUDED_FAILED
+  reason: >
+    V1-era Gemma4-E4B QLoRA training session (cloudspace/A100, 11/15 code cells executed).
+    Targets the v1 repo ShivRamSaud/gemma4-e4b-qlora-astroclimb with the standard recipe
+    (r64/alpha128/dropout 0.05, LR 1e-4, cosine, warmup 5%, batch 2x8 eff 16, MAX_SEQ_LEN 1536,
+    EVAL_STEPS 200, patience 2, variant-B prompt, no loss masking). The trainer died with
+    CUDA OOM (22.62 GiB alloc; compute_metrics stub, unlike EXP013 which sets it to None);
+    cells 12-15 (eval/viz/save/summary) never ran, so no adapter_best was produced here.
+    Config caps at max_steps=400 (~0.78ep), so the 900-step v1 adapter_best (val_loss 0.3489)
+    necessarily came from a later/resumed session whose executed notebook is still unpreserved.
+    Internal epoch bookkeeping is muddled (titles say 3 epochs / 1.5 epochs, EPOCHS=5,
+    filename 1.8_epoch) - recorded as-is. Valuable as executed-output evidence for Table 1
+    (full-train 1000/3000/3000/3000, pair types 4000/3000/3000, val 450/class crosstab,
+    residual 550/2550/2550/2550) and for total params 8,080,626,976.
+  failure_location: trainer cell (cell 11, OutOfMemoryError) + cells 12-15 unexecuted
+  error: OutOfMemoryError - tried to allocate 22.62 GiB on 79.25 GiB A100
+  alternative_versions_searched: true
+  compatible_version_found: false
+  metric_available: false

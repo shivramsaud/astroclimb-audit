@@ -47,7 +47,7 @@ experiments:
       parsing: normalize raw, map to 4 labels; OOM rows fall back to unrelated_papers (0 such rows here)
     preprocessing: {image: thumbnail(448,448), caption: truncate 2000 chars, text: same, labels: map to submission order}
     training:
-      note: adapter trained OUTSIDE this notebook (Lightning/HF run); this notebook evaluates it. Finetune-train best val_loss 0.3489 at 900 steps per notebook output.
+      note: adapter trained OUTSIDE this notebook; this notebook evaluates it. Finetune-train best val_loss 0.3489 at 900 steps per notebook output. The 900-step session itself is unpreserved; the closest artifact is the v1-era training script notebooks/excluded/EXCLUDED__gemma4_e4b_v1era_train__failed_oom_no_adapter.ipynb (same target repo, same recipe family r64/alpha128/LR 1e-4/eff16/cosine/1536, variant-B prompt, unmasked loss), whose preserved session OOM-died without producing an adapter - recipe details inferred for the 900-step run from that script, NOT directly evidenced.
       epochs: unknown
       steps: 900
       batch_size: unknown

@@ -4,7 +4,7 @@
 
 This repository is a forensic reconstruction of AstroCLIMB modeling work. The `wasp/` parent folder held
 source notebooks that were uploaded to Kaggle; this directory (`OUTPUT NOTEBOOKS`, the audit root) holds the
-25 notebooks on disk (23 in the first audit + 1 Lightning training notebook + 1 byte-exact copy of it re-added later). Filenames, notebook titles and markdown claims from
+26 notebooks on disk (23 in the first audit + 1 Lightning training notebook + 1 byte-exact copy of it re-added later). Filenames, notebook titles and markdown claims from
 those downloads were **untrusted**: several filenames contradict their own code (e.g. `baseline-qwen (1).ipynb`
 actually runs Gemma4-E4B; `loading-encoded-astroclimb-images (*).ipynb` hides 8 different models).
 
