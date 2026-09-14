@@ -330,8 +330,8 @@ experiments:
       split: train 8200 / val 1800
     modality: {image: true, caption: true, text: true, other: none}
     method: {type: qlora_sft_training, trained: true, fine_tuned: true, peft: true, lora: true, qlora: true}
-    prompting: {strategy: zero-shot descriptive (same contract; answer-only supervision, prompt tokens masked), few_shot: false, output_format: lowercase label only}
-    preprocessing: {image: base64 decode + thumbnail(448,448), caption: truncate, labels: answer-only loss masking}
+    prompting: {strategy: zero-shot descriptive (same contract; full-sequence causal LM, NO prompt masking - executed collate_fn clones input_ids to labels with the masking branch commented out), few_shot: false, output_format: lowercase label only}
+    preprocessing: {image: base64 decode + thumbnail(448,448), caption: truncate, labels: full-sequence (labels = input_ids clone; no -100 masking in the executed collator)}
     training:
       platform: Lightning AI cloudspace, 1x NVIDIA A100-SXM4-80GB (85.1GB free)
       epochs_max: 8
