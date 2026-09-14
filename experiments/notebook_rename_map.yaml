@@ -127,3 +127,7 @@
     ShivRamSaud/gemma4-e4b-qlora-astroclimb-v2-fresh - the artifact behind EXP010
     and the official 0.64282 submission. Training completed (best eval_loss 0.3464
     at step-1000, run continued to ~step-1600).
+- experiment_id: EXP013
+  original_filename: lightning_gemma_e4b_qlora_80gb.ipynb
+  corrected_filename: notebooks/excluded/DUPLICATE__lightning_qlora_finetune__exact_dup_of_EXP013.ipynb
+  reason: Byte-exact duplicate (sha256 71b7afc12c716721) of EXP013, re-added by the user under the original filename after the audit; preserved for provenance.

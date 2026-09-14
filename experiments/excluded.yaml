@@ -104,3 +104,8 @@
   status: DUPLICATE
   reason: Byte-exact duplicate (sha256 21db1f7bd29d219b) of EXP007.
   metric_available: true
+- notebook: notebooks/excluded/DUPLICATE__lightning_qlora_finetune__exact_dup_of_EXP013.ipynb
+  original: lightning_gemma_e4b_qlora_80gb.ipynb
+  status: DUPLICATE
+  reason: Byte-exact duplicate (sha256 71b7afc12c716721) of EXP013 (Lightning QLoRA finetune training, 15/15 cells executed, best eval_loss 0.3464 at step-1000, adapter_best to v2-fresh).
+  metric_available: true
