@@ -127,6 +127,8 @@
     residual 550/2550/2550/2550) and for total params 8,080,626,976.
   failure_location: trainer cell (cell 11, OutOfMemoryError) + cells 12-15 unexecuted
   error: OutOfMemoryError - tried to allocate 22.62 GiB on 79.25 GiB A100
+  superseded_by: EXP013 (notebooks/valid/EXP013__gemma4_e4b__qlora_finetune__lightning_a100.ipynb) - user-confirmed 2026-09-14, verified by code diff
+  supersession_evidence: same 16-cell/15-code lineage and recipe core (r64/alpha128, LR 1e-4, eff16, 1536, eval/200); v2 retargets output to v2-fresh repo and fixes the v1 failure mode (compute_metrics stub -> None, with NOTE citing the exact 22GB-logits OOM), raises budget caps (max_steps 400->2560, EPOCHS 5->8, patience 2->3), corrects PYTORCH_ALLOC_CONF env var, switches data to HF-only, and adds HubPushCallback; v2 ran to ~step-1600 (~3.1 epochs) and produced adapter_best (official 0.64282)
   alternative_versions_searched: true
   compatible_version_found: false
   metric_available: false
