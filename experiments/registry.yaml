@@ -355,7 +355,8 @@ experiments:
       seed: unknown
       software: {torch: 2.8.0+cu128, transformers: 5.16.1, bitsandbytes: 0.50.2, peft: 0.20.0, trl: 1.12.0}
     inference: none (training notebook; generation eval not run in-notebook - see EXP001/EXP010)
-    evaluation: {split: train-val 1800 (loss only), metric: eval_loss (NOT macro-F1), best_eval_loss: 0.34641456604003906 at step-1000, macro_f1: unknown}
+    evaluation: {split: train-val 1800 (loss only, every 200 steps), metric: eval_loss (NOT macro-F1), trajectory: {200: 0.4148, 400: 0.3712, 600: 0.3562, 800: 0.3499, 1000: 0.3464, 1200: 0.3509, 1400: 0.348, 1600: 0.3666}, best_eval_loss: 0.34641456604003906 at step-1000, stopped_at: step-1600 by early stopping (patience 3, counter reached 3; threshold 0.001), macro_f1: unknown (no generation eval exists for this adapter), source: trainer_state.json in HF adapter/checkpoint-1600}
+    artifact_vs_code_note: pushed trainer_state records num_train_epochs=5 and max_steps=2560 (=5 epochs at 512 steps/epoch, the binding cap); current notebook code says EPOCHS=8 (edited after the run or never the binding value). Paper follows the artifact.
     results: {local: {best_eval_loss: 0.34641456604003906}, kaggle: not_applicable (training only), shared_task: not_applicable, official_status: not_applicable}
     artifacts: {adapter_best: ShivRamSaud/gemma4-e4b-qlora-astroclimb-v2-fresh/adapter_best, intermediate_ckpts: [1200, 1600], note: merged push skipped in-session; merged later (see EXP001 pattern)}
     provenance: {train_notebook: this notebook (15/15 cells executed), evaluation_notebook: EXP001 (NEW 23-col generation eval of this adapter lineage) and EXP010 (test submission), reconstruction_notes: none}
