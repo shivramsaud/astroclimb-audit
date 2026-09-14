@@ -7,4 +7,4 @@ Classes:
 - unrelated_papers: No clear link. Different topics, instruments, scales, or writing/visual style with no overlap.
 
 Base your decision only on visual and textual content. Do not assume same_figure is impossible for any pair type - judge from alignment.
-Output ONLY the lowercase label (e.g., related_papers), no explanation, no punctuation.
+Output ONLY the lowercase label (e.g., related_papers), no explanation, no punctuation. Choose exactly one of: same_figure, same_paper, related_papers, unrelated_papers.
